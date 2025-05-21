@@ -1,19 +1,3 @@
-/*
- Navicat Premium Dump SQL
-
- Source Server         : Hospedagem
- Source Server Type    : MariaDB
- Source Server Version : 101110 (10.11.10-MariaDB-cll-lve)
- Source Host           : 104.156.48.234:3306
- Source Schema         : laressencia
-
- Target Server Type    : MariaDB
- Target Server Version : 101110 (10.11.10-MariaDB-cll-lve)
- File Encoding         : 65001
-
- Date: 21/05/2025 16:01:07
-*/
-
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
