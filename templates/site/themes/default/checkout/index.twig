@@ -1,0 +1,149 @@
+{% extends 'site/themes/default/layout.twig' %}
+
+{% block title %}Finalizar Pedido | Laressência{% endblock %}
+
+{% block content %}
+<section class="checkout-container">
+  {% if session.error is defined %}
+    <div class="error-message">{{ session.error }}</div>
+    {% set session = session|merge({'error': null}) %}
+  {% endif %}
+
+  <h1>🍎 Finalizar Pedido</h1>
+
+  <form method="post" action="{{ url('/finalizar-pedido') }}">
+    <input type="hidden" name="frete_selecionado" id="frete_selecionado" value="{{ frete_selecionado|default('') }}">
+
+    <div class="checkout-box">
+      <h2>🧳 Dados do Cliente</h2>
+
+      <label>E-mail:
+        <input type="email" name="email" id="email">
+      </label>
+
+      <div id="dados-cadastro" style="display: none;">
+        <label>Nome:
+          <input type="text" name="nome" id="nome">
+        </label>
+
+        <label>CPF:
+          <input type="text" name="cpf" id="cpf">
+        </label>
+
+        <label>Telefone:
+          <input type="text" name="telefone" id="telefone">
+        </label>
+
+        <h2>🏠 Endereço de Entrega</h2>
+
+        <label>CEP:
+          <div style="display: flex; gap: 10px;">
+            <input type="text" name="cep" id="cep" onblur="buscarEndereco()" placeholder="Digite o CEP" style="flex:1">
+            <button type="button" class="botao-azul" onclick="buscarEndereco()">ok</button>
+          </div>
+        </label>
+
+        <label>Rua:
+          <input type="text" name="rua" id="rua">
+        </label>
+
+        <label>Número:
+          <input type="text" name="numero" id="numero">
+        </label>
+
+        <label>Bairro:
+          <input type="text" name="bairro" id="bairro">
+        </label>
+
+        <label>Cidade:
+          <input type="text" name="cidade" id="cidade">
+        </label>
+
+        <label>Estado:
+          <input type="text" name="estado" id="estado">
+        </label>
+      </div>
+    </div>
+
+    <div class="checkout-box">
+      <h2>💳 Forma de Pagamento</h2>
+      <select name="forma_pagamento" required>
+        <option value="Pix">Pix</option>
+        <option value="Cartão de Crédito">Cartão de Crédito</option>
+        <option value="Boleto">Boleto</option>
+      </select>
+    </div>
+
+    <div class="checkout-box">
+      <h2>🛍️ Itens do Pedido</h2>
+      <ul>
+        {% for item in produtos %}
+          <li>🧴 {{ item.nome }} (x{{ item.quantidade }}) — R$ {{ (item.preco * item.quantidade)|number_format(2, ',', '.') }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="checkout-box">
+      <h2>🏦 Calcular Frete</h2>
+      <label>CEP para entrega:
+        <div style="display: flex; gap: 10px;">
+          <input type="text" id="cep-frete" name="cep_frete" placeholder="Digite seu CEP" maxlength="9" required style="flex:1">
+          <button type="button" id="btn-calcular-frete" class="botao-azul" onclick="Frete.calcularCheckout()">ok</button>
+
+        </div>
+      </label>
+      <div id="frete-opcoes" class="frete-opcoes"></div>
+    </div>
+
+    <div class="checkout-box">
+      <h2>🏦 Resumo do Pedido</h2>
+      <div class="resumo-valores">
+        <p><strong>Subtotal:</strong> <span id="subtotalValor" data-valor="{{ subtotal }}">R$ {{ subtotal|number_format(2, ",", ".") }}</span></p>
+        <p><strong>Frete:</strong> <span id="freteResumo">Não selecionado</span></p>
+        <p><strong>Total:</strong> <span id="totalResumo">R$ {{ subtotal|number_format(2, ",", ".") }}</span></p>
+      </div>
+    </div>
+
+    <button type="submit" class="botao-finalizar">✅ Finalizar Pedido</button>
+  </form>
+</section>
+
+<script src="{{ asset('assets/site/js/frete.js') }}"></script>
+<script src="{{ asset('assets/site/js/checkout.js') }}"></script>
+
+<style>
+.frete-item {
+  padding: 12px 16px;
+  background: #fff;
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.frete-item:hover {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+.frete-item.ativo {
+  border-color: #007bff;
+  background-color: #f0f8ff;
+  box-shadow: 0 0 0 2px rgba(0,123,255,0.3);
+}
+.logo-frete {
+  height: 20px;
+  width: auto;
+  max-width: 90px;
+}
+.error-message {
+  background: #ffe6e6;
+  color: #d32f2f;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+</style>
+{% endblock %}
